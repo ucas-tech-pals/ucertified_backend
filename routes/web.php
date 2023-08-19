@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\FilesController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +20,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+
+    return view('dashboard');
+
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/view' , [FilesController::class, 'get'])->name('view');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
