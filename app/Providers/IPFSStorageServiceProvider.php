@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\IPFSStorageService;
 use App\Services\NFTStorageService;
+use App\Services\Web3StorageService;
 use Illuminate\Support\ServiceProvider;
 
 class IPFSStorageServiceProvider extends ServiceProvider
