@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InstitutionAuth\LoginRequest;
+use App\Http\Requests\InstitutionAuth\RegisterRequest;
 use App\Models\Institution;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,28 +11,21 @@ use Illuminate\Support\Facades\Hash;
 
 class InstitutonAuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(RegisterRequest $request){
         
-        $fields = $request->validate([
-            'name' => 'required|string',
-            'email'=> 'required|string|unique:institutions,email',
-            'password' =>'required|string|confirmed',
+        $user = Institution::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
         ]);
 
-        $user = Institution::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'password' => Hash::make($fields['password']),
-        ]);
-        
-        
         $token = $user->createToken('ucertifiedtoken')->plainTextToken;
         $response = [
             'user' => $user,
             'token' => $token
         ];
 
-        return response($response , 201);
+        return response($response, 201);
     }
 // __________________________________________________________________________
 
@@ -40,27 +35,23 @@ class InstitutonAuthController extends Controller
     }
 // __________________________________________________________________________
 
-    public function login(Request $request){
-        $fields = $request->validate([
-            'email'=> 'required|string',
-            'password' =>'required|string',
-        ]);
-
-        $user = Institution::where('email' , $fields['email'])->first();
-
-        if(!$user || !Hash::check($fields['password'], $user->password)){
-            return response([
-                'massage' => 'Bad creds'
-            ] , 401);
-        }
+    public function login(LoginRequest $request){
         
+        $user = Institution::where('email', $request->input('email'))->first();
+
+        if (!$user || !Hash::check($request->input('password'), $user->password)) {
+            return response([
+                'message' => 'Bad credentials'
+            ], 401);
+        }
+
         $token = $user->createToken('ucertifiedtoken')->plainTextToken;
         $response = [
             'user' => $user,
             'token' => $token
         ];
 
-        return response($response , 201);
+        return response($response, 201);
     }
     
 }
