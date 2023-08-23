@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json([
         'user' =>auth('user')->user(),
     ]);
-});
+})->name('user');
 
 Route::post(
     '/login',
