@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\UserAuthController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\InstitutonAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,12 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ]);
 })->name('user');
 
-Route::post(
-    '/login',
-    [UserAuthController::class, 'login']
-)->name('login');
 
-Route::post(
-    '/register',
-    [UserAuthController::class, 'register']
-)->name('register');
