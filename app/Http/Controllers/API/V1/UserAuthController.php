@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\Auth\RegisterRequest;
+
+use App\Http\Requests\V1\Auth\UserAuth\RegisterRequest;
 use App\Http\Requests\V1\Auth\UserAuth\UserLoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class UserAuthController extends Controller
             'data' => $user,
         ]);
     }
+    
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
