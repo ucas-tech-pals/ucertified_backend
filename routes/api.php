@@ -23,14 +23,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ]);
 })->name('user');
 
-Route::controller(InstitutonAuthController::class)->group(function () {
-    Route::post('/institution/register', 'register');
-    Route::post('/institution/login', 'login');
-});
+Route::group(['middleware' => ['guest']], function () {
+    Route::controller(InstitutonAuthController::class)->group(function () {
+        Route::post('/institution/register', 'register')->name('institution.register');
+        Route::post('/institution/login', 'login')->name('institution.login');
+    });
 
-Route::controller(UserAuthController::class)->group(function () {
-    Route::post('/user/login', 'login');
-    Route::post('/user/register', 'register');
+    Route::controller(UserAuthController::class)->group(function () {
+        Route::post('/user/login', 'login')->name('login');
+        Route::post('/user/register', 'register')->name('register');
+    });
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

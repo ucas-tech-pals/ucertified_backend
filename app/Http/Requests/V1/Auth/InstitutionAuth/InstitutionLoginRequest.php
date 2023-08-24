@@ -12,13 +12,4 @@ class InstitutionLoginRequest extends LoginRequest
     {
         return Institution::class;
     }
-
-    public function rules(): array
-    {
-        return [
-            'email' => 'required|email|string|exists:institutions,email',
-            'password' => 'required',
-        ];
-    }
-
 }
