@@ -16,11 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function () {
     return response()->json([
-        'user' => auth('user')->user(),
+        'data' => auth('user')->user(),
     ]);
 })->name('user');
+Route::middleware('auth:sanctum')->get('/institution', function () {
+    return response()->json([
+        'data' => auth('institution')->user(),
+    ]);
+})->name('institution');
 
 Route::group(['middleware' => ['guest']], function () {
     Route::controller(InstitutionAuthController::class)->group(function () {
