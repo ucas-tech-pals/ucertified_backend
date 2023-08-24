@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Http\Requests\InstitutionAuth\LoginRequest;
 use App\Models\Institution;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\InstitutionAuth\InstitutionLoginRequest;
 use App\Http\Requests\V1\Auth\InstitutionAuth\RegisterRequest;
