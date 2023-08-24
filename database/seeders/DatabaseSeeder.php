@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {   
+    {
          User::factory(10)->create();
 
          User::factory()->create([
@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
          ]);
 
          Institution::factory(10)->create();
+
+         Institution::factory()->create([
+             'name' => 'UCAS',
+             'email' => 'admin@ucas.edu.ps',
+            ]);
     }
 }
