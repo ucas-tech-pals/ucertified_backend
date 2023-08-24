@@ -14,10 +14,7 @@ class Institution extends Authenticatable
 
     protected $guarded = [];
 
-    protected $table = 'institutions';
-
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 }
