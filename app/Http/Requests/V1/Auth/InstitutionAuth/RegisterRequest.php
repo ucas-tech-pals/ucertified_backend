@@ -1,14 +1,24 @@
 <?php
 
-namespace App\Http\Requests\InstitutionAuth;
+namespace App\Http\Requests\V1\Auth\InstitutionAuth;
 
 use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
 
-class RegisterRequest extends BaseRequest
+class RegisterRequest extends FormRequest
 {
+
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

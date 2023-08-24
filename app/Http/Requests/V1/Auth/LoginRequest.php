@@ -27,13 +27,13 @@ abstract class LoginRequest extends FormRequest
      *
      * @return array<string, Rule|array|string>
      */
-    public function rules(): array
-    {
-        return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ];
-    }
+    abstract public function rules(): array;
+    // {
+    //     return [
+    //         'email' => ['required', 'string', 'email'],
+    //         'password' => ['required', 'string'],
+    //     ];
+    // }
 
     /**
      * Attempt to authenticate the request's credentials.
