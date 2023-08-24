@@ -17,6 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->nullable();
             $table->foreignIdFor(Institution::class);
+            $table->string('name');
+            $table->string('path');
+            $table->date('date_issued')->default(now());
+            $table->date('date_expired')->nullable();
             $table->timestamps();
         });
     }
