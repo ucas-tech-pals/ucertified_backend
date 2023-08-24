@@ -11,5 +11,4 @@ class UserLoginRequest extends LoginRequest
     {
         return User::class;
     }
-
 }

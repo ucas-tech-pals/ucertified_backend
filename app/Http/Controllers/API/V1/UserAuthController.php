@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\Auth\RegisterRequest;
+
+use App\Http\Requests\V1\Auth\UserAuth\UserRegisterRequest;
 use App\Http\Requests\V1\Auth\UserAuth\UserLoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class UserAuthController extends Controller
         ]);
     }
 
-    public function register(RegisterRequest $request)
+    public function register(UserRegisterRequest $request)
     {
         $user = User::create($request->validated());
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -35,6 +36,7 @@ class UserAuthController extends Controller
             'data' => $user,
         ]);
     }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
