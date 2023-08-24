@@ -31,7 +31,7 @@ class InstitutionAuthController extends Controller
 
         return response()->json([
             'message' => 'Logged in successfully',
-            'token' => $token,
+            'access_token' => $token,
             'token_type' => 'Bearer',
             'data' => $user,
             ]);
