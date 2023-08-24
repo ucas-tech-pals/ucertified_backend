@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\UserAuthController;
-use App\Http\Controllers\FilesController;
-use App\Http\Controllers\API\V1\InstitutonAuthController;
+use App\Http\Controllers\API\V1\InstitutionAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 })->name('user');
 
 Route::group(['middleware' => ['guest']], function () {
-    Route::controller(InstitutonAuthController::class)->group(function () {
+    Route::controller(InstitutionAuthController::class)->group(function () {
         Route::post('/institution/register', 'register')->name('institution.register');
         Route::post('/institution/login', 'login')->name('institution.login');
     });
@@ -36,6 +35,6 @@ Route::group(['middleware' => ['guest']], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/institution/logout', [InstitutonAuthController::class, 'logout']);
+    Route::post('/institution/logout', [InstitutionAuthController::class, 'logout']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
 });
