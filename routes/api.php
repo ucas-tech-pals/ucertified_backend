@@ -24,8 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['guest']], function () {
     Route::controller(InstitutionAuthController::class)->group(function () {
-        Route::post('/institution/register', 'register')->name('institution.register');
-        Route::post('/institution/login', 'login')->name('institution.login');
+        Route::post('/university/register', 'register')->name('university.register');
+        Route::post('/university/login', 'login')->name('university.login');
     });
 
     Route::controller(UserAuthController::class)->group(function () {
@@ -35,6 +35,6 @@ Route::group(['middleware' => ['guest']], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/institution/logout', [InstitutionAuthController::class, 'logout']);
+    Route::post('/university/logout', [InstitutionAuthController::class, 'logout']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
 });
