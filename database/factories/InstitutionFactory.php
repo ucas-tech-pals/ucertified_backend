@@ -19,7 +19,7 @@ class InstitutionFactory extends Factory
         return [
             'name' => fake()->company(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => bcrypt('12345678'), 
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'logo' => 'logo.png',
             'website' => fake()->url(),
             'phone_number' => fake()->phoneNumber(),
