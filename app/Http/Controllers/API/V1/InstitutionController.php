@@ -14,54 +14,26 @@ class InstitutionController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreInstitutionRequest $request)
-    {
-        //
+        $institutions = Institution::paginate();
+        return response()->json(['message' => 'Institutions returend successfully.', 'data' => $institutions], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Institution $institution)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Institution $institution)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateInstitutionRequest $request, Institution $institution)
-    {
-        //
+        $institution = Institution::findOrFail($id);
+        return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Institution $institution)
+    public function destroy($id)
     {
-        //
+        $institution = Institution::findOrFail($id);
+        $deletedInstitution = $institution->delete();
+        return response()->json(['message' => 'Institution deleted successfully.', 'deleted' => $deletedInstitution], 200);
     }
 }
