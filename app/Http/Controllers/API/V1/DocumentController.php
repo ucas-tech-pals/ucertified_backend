@@ -30,7 +30,8 @@ class DocumentController extends Controller
      */
     public function show(Document $document)
     {
-        //
+        return $document;
+//        return response()->json(['message' => 'Document returned successfully.', 'data' => $document]);
     }
 
     /**

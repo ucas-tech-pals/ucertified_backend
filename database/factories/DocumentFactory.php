@@ -17,7 +17,11 @@ class DocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'path' => 'documents/1.pdf',
+            'date_issued' => fake()->date(),
+            'date_expired' => fake()->date(),
+
         ];
     }
 }

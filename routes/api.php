@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\DocumentController;
 use App\Http\Controllers\API\V1\UserAuthController;
 use App\Http\Controllers\API\V1\InstitutionAuthController;
 use App\Http\Controllers\API\V1\InstitutionController;
@@ -45,4 +46,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
 });
 
-Route::apiResource('universities', InstitutionController::class)->middleware('auth:institution');
+Route::apiResource('universities', InstitutionController::class,
+    ['parameters' => ['universities' => 'institution']])->except(['store']);
+
+Route::get('universities/documents', [InstitutionController::class, 'documents']);
+
+Route::apiResource('certificates', DocumentController::class,
+    ['parameters' => ['certificates' => 'document']])->except(['store']);

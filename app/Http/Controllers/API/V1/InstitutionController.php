@@ -11,7 +11,7 @@ class InstitutionController extends Controller
 {
     public function __construct()
     {
-//        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
 
     /**
@@ -50,17 +50,10 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
-        if (auth($institution)->user()->id !== $institution->id) {
+        if (auth($institution)->id() !== $institution->id) {
             return response()->json(['message' => 'This action is unauthorized.'], 403);
         }
         $institution->delete();
         return response()->json(['message' => 'Institution deleted successfully.']);
-    }
-
-    public function documents()
-    {
-
-        $documents = auth('institution')->documents()->paginate();
-        return response()->json(['message' => 'Documents returned successfully.', 'data' => $documents]);
     }
 }
