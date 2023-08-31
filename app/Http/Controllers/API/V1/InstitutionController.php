@@ -21,11 +21,11 @@ class InstitutionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreInstitutionRequest $request)
-    {
-        $institution = Institution::create($request->validated());
-        return response()->json(['message' => 'Institution created successfully.', 'data' => $institution]);
-    }
+//    public function store(StoreInstitutionRequest $request)
+//    {
+//        $institution = Institution::create($request->validated());
+//        return response()->json(['message' => 'Institution created successfully.', 'data' => $institution]);
+//    }
 
     /**
      * Display the specified resource.
