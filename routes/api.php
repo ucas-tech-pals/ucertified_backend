@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\UserAuthController;
 use App\Http\Controllers\API\V1\InstitutionAuthController;
+use App\Http\Controllers\API\V1\InstitutionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,9 +38,16 @@ Route::group(['middleware' => ['guest']], function () {
         Route::post('/user/login', 'login')->name('login');
         Route::post('/user/register', 'register')->name('register');
     });
+    Route::put('update/{id}', [InstitutionController::class, 'update']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/university/logout', [InstitutionAuthController::class, 'logout']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
+});
+
+Route::controller(InstitutionController::class)->group(function () {
+    Route::get('universities', 'index');
+    Route::get('universities/{id}', 'show');
+    Route::delete('universities/delete/{id}', 'destroy');
 });
