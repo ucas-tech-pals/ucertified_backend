@@ -15,25 +15,32 @@ class InstitutionController extends Controller
     public function index()
     {
         $institutions = Institution::paginate();
-        return response()->json(['message' => 'Institutions returend successfully.', 'data' => $institutions], 200);
+        return response()->json(['message' => 'Institutions returned successfully.', 'data' => $institutions]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Institution $institution)
     {
-        $institution = Institution::findOrFail($id);
-        return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution], 200);
+        return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution]);
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateInstitutionRequest $request, Institution $institution)
+    {
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Institution $institution)
     {
-        $institution = Institution::findOrFail($id);
-        $deletedInstitution = $institution->delete();
-        return response()->json(['message' => 'Institution deleted successfully.', 'deleted' => $deletedInstitution], 200);
+        $institution->delete();
+        return response()->json(['message' => 'Institution deleted successfully.']);
     }
 }

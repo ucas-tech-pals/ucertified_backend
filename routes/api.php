@@ -3,7 +3,6 @@
 use App\Http\Controllers\API\V1\UserAuthController;
 use App\Http\Controllers\API\V1\InstitutionAuthController;
 use App\Http\Controllers\API\V1\InstitutionController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,8 +45,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
 });
 
-Route::controller(InstitutionController::class)->group(function () {
-    Route::get('universities', 'index');
-    Route::get('universities/{id}', 'show');
-    Route::delete('universities/delete/{id}', 'destroy');
-});
+Route::apiResource('universities', InstitutionController::class)->middleware('auth:institution');
