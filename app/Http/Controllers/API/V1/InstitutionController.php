@@ -9,6 +9,11 @@ use App\Models\Institution;
 
 class InstitutionController extends Controller
 {
+    public function __construct()
+    {
+//        $this->middleware('auth:sanctum')->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -19,19 +24,14 @@ class InstitutionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-//    public function store(StoreInstitutionRequest $request)
-//    {
-//        $institution = Institution::create($request->validated());
-//        return response()->json(['message' => 'Institution created successfully.', 'data' => $institution]);
-//    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Institution $institution)
     {
+        if (auth('institution')->id() === $institution->id) {
+            $documents = $institution->documents()->paginate();
+            return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution, 'documents' => $documents]);
+        }
         return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution]);
     }
 
@@ -50,7 +50,17 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
+        if (auth($institution)->user()->id !== $institution->id) {
+            return response()->json(['message' => 'This action is unauthorized.'], 403);
+        }
         $institution->delete();
         return response()->json(['message' => 'Institution deleted successfully.']);
+    }
+
+    public function documents()
+    {
+
+        $documents = auth('institution')->documents()->paginate();
+        return response()->json(['message' => 'Documents returned successfully.', 'data' => $documents]);
     }
 }
