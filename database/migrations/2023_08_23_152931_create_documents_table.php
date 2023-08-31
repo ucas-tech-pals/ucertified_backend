@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->nullable();
+            $table->string('signature')->nullable();
             $table->foreignIdFor(Institution::class);
             $table->string('name');
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->date('date_issued')->default(now());
             $table->date('date_expired')->nullable();
             $table->timestamps();

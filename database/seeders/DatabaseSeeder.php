@@ -28,9 +28,9 @@ class DatabaseSeeder extends Seeder
              'email' => 'admin@ucas.edu.ps',
             ]);
 
-         Institution::factory(10)
-            ->create()
-            ->each(function (Institution $institution) {
+         Institution::factory(3)->create();
+
+         Institution::all()->each(function (Institution $institution) {
                 $institution->documents()
                     ->saveMany(Document::factory(10)->make());
             });

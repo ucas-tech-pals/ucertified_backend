@@ -10,8 +10,7 @@ class Document extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
+    protected $guarded = ['signature'];
     public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class);

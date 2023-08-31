@@ -16,10 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('logo')->nullable();
-            $table->string('website')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->text('description')->nullable(); 
+//            $table->string('logo')->nullable();
+//            $table->string('website')->nullable();
+//            $table->string('phone_number')->nullable();
+//            $table->text('description')->nullable();
+            $table->string('public_key')->nullable();
+            $table->string('private_key')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

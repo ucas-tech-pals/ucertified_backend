@@ -52,4 +52,6 @@ Route::apiResource('universities', InstitutionController::class,
 Route::get('universities/documents', [InstitutionController::class, 'documents']);
 
 Route::apiResource('certificates', DocumentController::class,
-    ['parameters' => ['certificates' => 'document']])->except(['store']);
+    ['parameters' => ['certificates' => 'document']])->middleware('auth:institution');
+
+Route::post('certificates/verify', [DocumentController::class, 'verify']);
