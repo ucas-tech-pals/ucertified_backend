@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\PDFCryptoSigner\CryptoManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,5 +30,14 @@ class Institution extends Authenticatable
     public function users(): HasManyThrough
     {
         return $this->hasManyThrough(User::class, Document::class);
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($institution) {
+            $keys = CryptoManager::generateKeyPair();
+            $institution->private_key = $keys['private_key'];
+            $institution->public_key = $keys['public_key'];
+        });
     }
 }
