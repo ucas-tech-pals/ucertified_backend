@@ -23,7 +23,6 @@ class VerifyDocumentRequest extends FormRequest
     {
         return [
             'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf'],
-            'institution_id' => ['required', 'exists:institutions,id']
         ];
     }
 }

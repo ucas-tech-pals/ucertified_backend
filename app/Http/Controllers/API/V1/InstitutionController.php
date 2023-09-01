@@ -11,7 +11,7 @@ class InstitutionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('auth:institution')->only(['update', 'destroy']);
     }
 
     /**
@@ -20,7 +20,7 @@ class InstitutionController extends Controller
     public function index()
     {
         $institutions = Institution::paginate();
-        return response()->json(['message' => 'Institutions returned successfully.', 'data' => $institutions]);
+        return response()->json(['message' => 'Universities returned successfully.', 'data' => $institutions]);
     }
 
     /**
@@ -30,9 +30,9 @@ class InstitutionController extends Controller
     {
         if (auth('institution')->id() === $institution->id) {
             $documents = $institution->documents()->paginate();
-            return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution, 'documents' => $documents]);
+            return response()->json(['message' => 'University returned successfully.', 'data' => $institution, 'documents' => $documents]);
         }
-        return response()->json(['message' => 'Institution returned successfully.', 'data' => $institution]);
+        return response()->json(['message' => 'University returned successfully.', 'data' => $institution]);
     }
 
 
@@ -42,7 +42,7 @@ class InstitutionController extends Controller
     public function update(UpdateInstitutionRequest $request, Institution $institution)
     {
         $institution->update($request->validated());
-        return response()->json(['message' => 'Institution updated successfully.', 'data' => $institution]);
+        return response()->json(['message' => 'University updated successfully.', 'data' => $institution]);
     }
 
     /**
@@ -50,10 +50,10 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
-        if (auth($institution)->id() !== $institution->id) {
+        if (auth('institution')->id() !== $institution->id) {
             return response()->json(['message' => 'This action is unauthorized.'], 403);
         }
         $institution->delete();
-        return response()->json(['message' => 'Institution deleted successfully.']);
+        return response()->json(['message' => 'University deleted successfully.']);
     }
 }

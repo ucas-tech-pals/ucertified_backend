@@ -12,6 +12,11 @@ use App\PDFCryptoSigner\PDFCryptoSigner;
 
 class DocumentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:user')->only('index');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -19,7 +24,7 @@ class DocumentController extends Controller
     {
         $documents = auth('user')->user()->documents()->paginate();
         $documents->getCollection()->transform(function ($document) {
-            $document->file = asset('storage/' . $document->file);
+            $document->url = asset('storage/' . $document->path);
             return $document;
         });
         return response()->json(['message' => 'Documents returned successfully.', 'data' => $documents]);
@@ -35,14 +40,13 @@ class DocumentController extends Controller
             'name' => $request->name,
             'institution_id' => auth('institution')->id(),
         ]);
-        $signature = PDFCryptoSigner::load($file->path())
+
+        PDFCryptoSigner::load($file->path())
             ->sign(auth('institution')->user()->private_key,
             [
                 'name' => $request->name,
                 'document_id' => $document->id,
             ]);
-        $document->signature = $signature;
-        $document->save();
         return response()->file($file->path())->deleteFileAfterSend();
 
     }
@@ -52,8 +56,7 @@ class DocumentController extends Controller
      */
     public function show(Document $document)
     {
-        // get the url of the file
-        $document->file = asset('storage/' . $document->file);
+        $document->url = asset('storage/' . $document->path);
         return response()->json(['message' => 'Document returned successfully.', 'data' => $document]);
     }
 
@@ -61,32 +64,41 @@ class DocumentController extends Controller
     {
         $path = $request->file('file')->path();
 
-        $response = PDFCryptoSigner::load($path)->getHeaders();
-        if (!isset($response['document_id'])) {
-            return response()->json(['message' => 'Document not verified.', 'data' => $response]);
+        $headers = PDFCryptoSigner::load($path)->getHeaders();
+        if (!isset($headers['document_id'])) {
+            return response()->json(['message' => 'Document not verified.']);
         }
-        $document_id = $response['document_id'];
-
-        $institution = Institution::whereHas('documents', function ($query) use ($document_id) {
-            $query->where('id', $document_id);
+        $institution = Institution::whereHas('documents', function ($query) use ($headers) {
+            $query->where('id', $headers['document_id']);
         })->first();
 
-        $response = PDFCryptoSigner::load($path)->verify($institution->public_key);
+        if (!$institution) {
+            return response()->json(['message' => 'Document not verified.']);
+        }
 
-        if (!$response['verified']) {
-            return response()->json(['message' => 'Document not verified.', 'data' => $response]);
+        $headers = PDFCryptoSigner::load($path)->verify($institution->public_key);
+
+        if (!$headers['verified']) {
+            return response()->json(['message' => 'Document not verified.']);
         }
 
         if (!auth('user')->check()){
-            return response()->json(['message' => 'Document verified successfully.', 'data' => $response]);
+            return response()->json(['message' => 'Document verified successfully.', 'data' => $headers]);
         }
-        $path = $request->file('file')->store('documents');
-
-        $document = Document::findOrFail($response['document_id']);
-        $document->path = $path;
+        $path = $request->file('file')->store('documents', [
+            'disk' => 'public',
+            'visibility' => 'public'
+        ]);
+        $document = Document::findOrFail($headers['document_id']);
+        if ($document->user_id != null) {
+            return response()->json(['message' => 'Document already verified.', 'data' => $headers]);
+        }
         $document->user_id = auth('user')->id();
+        $document->path = $path;
         $document->save();
-        return response()->json(['message' => 'Document verified successfully.', 'data' => $response]);
+
+        $headers['url'] = asset('storage/' . $path);
+        return response()->json(['message' => 'Document has been added to your profile.', 'data' => $headers]);
     }
     /**
      * Update the specified resource in storage.

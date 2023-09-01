@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function () {
+Route::middleware('auth:user')->get('/user', function () {
     return response()->json([
         'data' => auth('user')->user(),
     ]);
 })->name('user');
-Route::middleware('auth:sanctum')->get('/institution', function () {
+Route::middleware('auth:institution')->get('/institution', function () {
     return response()->json([
         'data' => auth('institution')->user(),
     ]);
@@ -38,20 +38,15 @@ Route::group(['middleware' => ['guest']], function () {
         Route::post('/user/login', 'login')->name('login');
         Route::post('/user/register', 'register')->name('register');
     });
-    Route::put('update/{id}', [InstitutionController::class, 'update']);
 });
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/university/logout', [InstitutionAuthController::class, 'logout']);
-    Route::post('/user/logout', [UserAuthController::class, 'logout']);
-});
+Route::post('/university/logout', [InstitutionAuthController::class, 'logout'])->middleware('auth:institution');
+Route::post('/user/logout', [UserAuthController::class, 'logout'])->middleware('auth:user');
 
 Route::apiResource('universities', InstitutionController::class,
     ['parameters' => ['universities' => 'institution']])->except(['store']);
 
-Route::get('universities/documents', [InstitutionController::class, 'documents']);
-
 Route::apiResource('certificates', DocumentController::class,
-    ['parameters' => ['certificates' => 'document']])->middleware('auth:institution');
+    ['parameters' => ['certificates' => 'document']])->except(['update', 'destroy']);
 
 Route::post('certificates/verify', [DocumentController::class, 'verify']);

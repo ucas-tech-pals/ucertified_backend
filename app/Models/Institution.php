@@ -17,7 +17,7 @@ class Institution extends Authenticatable
     protected $guarded = [];
 
     protected $hidden = [
-        'password',
+        'password', 'private_key', 'public_key',
     ];
     protected $casts = [
         'password' => 'hashed',
