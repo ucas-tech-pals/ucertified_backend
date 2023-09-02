@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Document;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class VerifyDocumentRequest extends FormRequest
 {
@@ -23,6 +24,7 @@ class VerifyDocumentRequest extends FormRequest
     {
         return [
             'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf'],
+            'password' => [Password::defaults()],
         ];
     }
 }

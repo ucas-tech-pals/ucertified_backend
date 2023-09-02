@@ -8,7 +8,9 @@ use App\Http\Requests\V1\Document\UpdateDocumentRequest;
 use App\Http\Requests\V1\Document\VerifyDocumentRequest;
 use App\Models\Document;
 use App\Models\Institution;
+use App\Models\User;
 use App\PDFCryptoSigner\PDFCryptoSigner;
+use Illuminate\Support\Facades\Hash;
 
 class DocumentController extends Controller
 {
@@ -30,6 +32,11 @@ class DocumentController extends Controller
         return response()->json(['message' => 'Documents returned successfully.', 'data' => $documents]);
     }
 
+    public function randomPassword()
+    {
+        return response()->json(['message' => 'Random password generated successfully.',
+            'data' => bin2hex(random_bytes(8))]);
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -41,13 +48,31 @@ class DocumentController extends Controller
             'institution_id' => auth('institution')->id(),
         ]);
 
+        $headers = [
+            'name' => $request->name,
+            'document_id' => $document->id,
+        ];
+
+        if ($request->has('password')) {
+            $headers['password'] = Hash::make($request->password);
+        }
+
         PDFCryptoSigner::load($file->path())
-            ->sign(auth('institution')->user()->private_key,
-            [
-                'name' => $request->name,
-                'document_id' => $document->id,
+            ->sign(auth('institution')->user()->private_key, $headers);
+
+        if ($request->user_email) {
+            $user = User::where('email', $request->user_email)->firstOrFail();
+            $path = $request->file('file')->store('documents', [
+                'disk' => 'public',
+                'visibility' => 'public'
             ]);
-        return response()->file($file->path())->deleteFileAfterSend();
+            $document->user_id = $user->id;
+            $document->path = $path;
+            $document->save();
+        }
+        return response()->download($file->path(), 'signed.pdf', [
+            'Content-Type' => 'application/pdf',
+        ])->deleteFileAfterSend();
 
     }
 
@@ -65,9 +90,10 @@ class DocumentController extends Controller
         $path = $request->file('file')->path();
 
         $headers = PDFCryptoSigner::load($path)->getHeaders();
-        if (!isset($headers['document_id'])) {
+        if ($headers && !isset($headers['document_id'])) {
             return response()->json(['message' => 'Document not verified.']);
         }
+
         $institution = Institution::whereHas('documents', function ($query) use ($headers) {
             $query->where('id', $headers['document_id']);
         })->first();
@@ -85,14 +111,20 @@ class DocumentController extends Controller
         if (!auth('user')->check()){
             return response()->json(['message' => 'Document verified successfully.', 'data' => $headers]);
         }
-        $path = $request->file('file')->store('documents', [
-            'disk' => 'public',
-            'visibility' => 'public'
-        ]);
+
+        if (isset($headers['password']) && !Hash::check($request->password, $headers['password'])) {
+            return response()->json(['message' => 'Invalid password.']);
+        }
+
         $document = Document::findOrFail($headers['document_id']);
         if ($document->user_id != null) {
             return response()->json(['message' => 'Document already verified.', 'data' => $headers]);
         }
+
+        $path = $request->file('file')->store('documents', [
+            'disk' => 'public',
+            'visibility' => 'public'
+        ]);
         $document->user_id = auth('user')->id();
         $document->path = $path;
         $document->save();

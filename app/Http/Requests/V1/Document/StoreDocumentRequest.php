@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Document;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class StoreDocumentRequest extends FormRequest
 {
@@ -23,7 +24,9 @@ class StoreDocumentRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-             'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf'],
+            'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf'],
+            'user_email' => ['exists:users,email', 'email', 'max:255'],
+            'password' => [Password::defaults()],
         ];
     }
 }
