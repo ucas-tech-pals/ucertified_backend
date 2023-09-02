@@ -32,11 +32,6 @@ class DocumentController extends Controller
         return response()->json(['message' => 'Documents returned successfully.', 'data' => $documents]);
     }
 
-    public function randomPassword()
-    {
-        return response()->json(['message' => 'Random password generated successfully.',
-            'data' => bin2hex(random_bytes(8))]);
-    }
     /**
      * Store a newly created resource in storage.
      */
