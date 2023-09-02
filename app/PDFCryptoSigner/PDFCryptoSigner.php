@@ -91,18 +91,31 @@ class PDFCryptoSigner implements CryptoSigner
                 $headers = array_merge($headers, json_decode(CryptoManager::base64Decode($encodedHeaders), true));
             }
 
-        } catch (Exception $e) {
+        } catch (Exception) {
             $headers = ['verified' => false];
         }
         return $headers;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array|false
     {
         try {
+            $content = file_get_contents($this->path);
 
-        } catch (Exception){
-            return;
+            $explodedContent = explode("\n", $content);
+            $embeddedSignature = end($explodedContent);
+            $explodedSignature = explode('7PI', $embeddedSignature);
+
+            if (count($explodedSignature) !== 3) {
+                throw new Exception('Invalid signature');
+            }
+
+            $encodedHeaders = $explodedSignature[1];
+
+            return json_decode(CryptoManager::base64Decode($encodedHeaders), true);
+
+        } catch (Exception) {
+            return false;
         }
     }
 
