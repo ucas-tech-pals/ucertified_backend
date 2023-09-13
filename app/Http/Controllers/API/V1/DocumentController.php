@@ -85,7 +85,7 @@ class DocumentController extends Controller
         $path = $request->file('file')->path();
 
         $headers = PDFCryptoSigner::load($path)->getHeaders();
-        if ($headers && !isset($headers['document_id'])) {
+        if (!$headers && !isset($headers['document_id'])) {
             return response()->json(['message' => 'Document not verified.']);
         }
 
